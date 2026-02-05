@@ -30,64 +30,56 @@ class RouteType(str, Enum):
 # ═══════════════════════════════════════════════
 
 IGNORE_UTTERANCES = [
-    "ok", "okay", "k", "kk", "okok", "oke",
+    "ok", "okay", "k", "kk", "okok",
     "hmm", "hm", "hmmm",
-    "lol", "lmao", "lmfao", "wkwk", "wkwkwk", "awkwk",
-    "haha", "hahaha", "hihi",
+    "lol", "lmao", "lmfao", "haha", "hahaha",
     "yes", "no", "yep", "nope", "nah", "ye", "yeh",
     "nice", "cool", "bet", "aight", "alright",
     "damn", "dope", "sick", "based",
     "fr", "ong", "facts",
     "💀", "😂", "🔥", "👍", "👎", "😭", "❤️",
     ".", "..", "...",
-    "gg", "ez", "wp",
-    "iya", "ya", "gitu", "oh", "ooh",
-    "woi", "oi", "eh",
+    "gg", "ez", "wp"
 ]
 
 CHITCHAT_UTTERANCES = [
     "hi", "hello", "hey", "yo", "sup",
-    "halo", "hai", "hei",
     "good morning", "gm", "morning",
     "good night", "gn", "night",
     "good afternoon", "good evening",
-    "pagi", "selamat pagi", "met pagi",
-    "malam", "selamat malam",
     "how are you", "how are you doing",
     "whats up", "what's up", "wassup",
-    "apa kabar", "gimana kabarnya",
-    "lagi ngapain", "ngapain",
+    "doing what",
     "thanks", "thank you", "thx", "ty",
-    "makasih", "terima kasih", "mksh",
     "bye", "goodbye", "see you", "see ya",
-    "dadah", "sampai jumpa",
+    "later", "peace"
 ]
 
 LLM_REQUIRED_UTTERANCES = [
-    "what do you think about", "apa pendapatmu tentang",
-    "explain this", "jelasin dong", "jelaskan",
-    "why is", "kenapa", "mengapa",
-    "how does", "gimana caranya", "bagaimana",
-    "tell me about", "ceritain dong",
-    "can you help me", "bisa bantu gak",
-    "what should I do", "gw harus gimana",
-    "do you know", "tau gak",
-    "I have a question", "gw mau tanya",
-    "what happened", "apa yang terjadi",
-    "have you ever", "pernah gak",
-    "I think that", "menurut gw",
-    "let's talk about", "ngomongin soal",
-    "I need advice", "butuh saran",
-    "what is your opinion", "pendapat lo gimana",
-    "can you explain", "bisa jelasin",
-    "I disagree", "gw gak setuju",
-    "that's interesting because", "menarik karena",
-    "have you heard about", "udah denger belum",
-    "I'm confused about", "gw bingung soal",
-    "what's the difference between", "apa bedanya",
-    "roast me", "coba roast gw",
-    "tell me a joke", "cerita lucu dong",
-    "recommend me something", "rekomendasiin dong",
+    "what do you think about",
+    "explain this", "explain",
+    "why is", "why",
+    "how does", "how to",
+    "tell me about",
+    "can you help me",
+    "what should I do",
+    "do you know",
+    "I have a question",
+    "what happened",
+    "have you ever",
+    "I think that",
+    "let's talk about",
+    "I need advice",
+    "what is your opinion",
+    "can you explain",
+    "I disagree",
+    "that's interesting because",
+    "have you heard about",
+    "I'm confused about",
+    "what's the difference between",
+    "roast me",
+    "tell me a joke",
+    "recommend me something",
 ]
 
 
@@ -97,42 +89,37 @@ LLM_REQUIRED_UTTERANCES = [
 
 CHITCHAT_RESPONSES = {
     "greeting": [
-        "yo", "hey", "sup", "halo", "yo wassup",
-        "eh ada", "oi", "yoo",
+        "yo", "hey", "sup", "hello", "yo wassup", "oi"
     ],
     "greeting_morning": [
-        "pagi", "gm", "morning", "pagi juga",
-        "yo pagi", "met pagi",
+        "gm", "morning", "good morning", "rise and shine"
     ],
     "greeting_night": [
-        "night", "gn", "malam", "nite",
-        "tidur sana", "met malam",
+        "night", "gn", "good night", "nite", "sleep well"
     ],
     "how_are_you": [
-        "chillin, you?", "biasa aja", "fine",
-        "santai, lu?", "good good", "ya gitu deh",
+        "chillin, you?", "vibing", "fine", "same old", "good good"
     ],
     "thanks": [
-        "np", "no prob", "santai", "yoi",
-        "sama sama", "anytime",
+        "np", "no prob", "sure", "anytime", "yw"
     ],
     "bye": [
-        "see ya", "bye", "dadah", "later",
-        "sampai nanti", "peace",
+        "see ya", "bye", "later", "peace", "cya"
     ],
     "whats_up": [
-        "nothing much", "biasa aja", "chillin",
-        "gitu gitu aja", "santai", "lagi gabut",
+        "nothing much", "chillin", "just existing", "bored", "vibing"
     ],
 }
 
-GREETING_KEYWORDS = {"hi", "hello", "hey", "yo", "sup", "halo", "hai", "hei"}
-MORNING_KEYWORDS = {"morning", "gm", "pagi"}
-NIGHT_KEYWORDS = {"night", "gn", "malam"}
-HOW_ARE_YOU_KEYWORDS = {"how are you", "apa kabar", "gimana kabarnya"}
-THANKS_KEYWORDS = {"thanks", "thank", "thx", "ty", "makasih", "terima kasih", "mksh"}
-BYE_KEYWORDS = {"bye", "goodbye", "dadah", "see ya", "see you", "sampai"}
-WHATS_UP_KEYWORDS = {"whats up", "what's up", "wassup", "ngapain", "lagi ngapain"}
+# CLEANED: Strictly English Keywords to prevent "Bipolar Language" issues.
+# If user speaks Indo, it will fail these checks and fall to LLM (Desired Behavior).
+GREETING_KEYWORDS = {"hi", "hello", "hey", "yo", "sup"}
+MORNING_KEYWORDS = {"morning", "gm"}
+NIGHT_KEYWORDS = {"night", "gn"}
+HOW_ARE_YOU_KEYWORDS = {"how are you"}
+THANKS_KEYWORDS = {"thanks", "thank", "thx", "ty"}
+BYE_KEYWORDS = {"bye", "goodbye", "see ya", "see you"}
+WHATS_UP_KEYWORDS = {"whats up", "what's up", "wassup"}
 
 
 # ═══════════════════════════════════════════════
