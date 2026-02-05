@@ -1,0 +1,42 @@
+# ═══════════════════════════════════════════════
+# TWO MOON v5 — 2M_Gumiho
+# ═══════════════════════════════════════════════
+
+# ═══ CORE ═══
+discord.py==2.4.0
+python-dotenv==1.0.1
+pydantic==2.10.6
+pydantic-settings==2.7.1
+
+# ═══ PERFORMANCE ═══
+uvloop==0.21.0
+orjson==3.10.14
+
+# ═══ AI / LLM ═══
+groq==0.15.0
+openai==1.61.0
+instructor==1.7.2
+tiktoken==0.8.0
+
+# ═══ LOCAL ROUTING (The Gatekeeper) ═══
+semantic-router==0.1.0
+fastembed==0.5.1
+
+# ═══ RESILIENCE ═══
+pybreaker==1.2.0
+tenacity==9.0.0
+
+# ═══ DATABASE ═══
+asyncpg==0.30.0
+redis[hiredis]==5.2.1
+
+# ═══ NLP ═══
+vaderSentiment==3.3.2
+
+# ═══ OBSERVABILITY ═══
+structlog==24.4.0
+
+# ═══ TESTING ═══
+pytest==8.3.4
+pytest-asyncio==0.25.2
+deepeval==2.1.4
