@@ -52,6 +52,7 @@ SCHEMA_SQL = [
     """,
 
     "CREATE INDEX IF NOT EXISTS idx_convlog_channel ON conversation_log (channel_id, created_at DESC)",
+    "CREATE INDEX IF NOT EXISTS idx_convlog_embedding ON conversation_log USING hnsw (embedding opclass_vec_l2_ops)",
 
     """
     CREATE TABLE IF NOT EXISTS server_personas (
