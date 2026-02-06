@@ -205,7 +205,7 @@ async def semantic_search(
             content,
             is_bot,
             created_at,
-            (embedding <-> $2) as distance
+            (embedding::vector <-> $2::vector) as distance
         FROM candidates
         ORDER BY distance ASC
         LIMIT $4
