@@ -19,7 +19,7 @@ instructor==1.7.2
 tiktoken==0.8.0
 
 # ═══ LOCAL ROUTING (The Gatekeeper) ═══
-semantic-router==0.1.0
+semantic-router==0.0.48
 fastembed==0.5.1
 
 # ═══ RESILIENCE ═══
