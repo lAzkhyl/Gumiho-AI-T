@@ -52,8 +52,13 @@ class ChatCog(commands.Cog):
     async def on_message(self, message: discord.Message) -> None:
         if message.author.bot:
             return
-        if not message.guild or str(message.guild.id) != str(self.bot.settings.discord.allowed_server_id):
+
+        guild_id = message.guild.id if message.guild else 0
+        allowed_id = self.bot.settings.discord.allowed_server_id
+
+        if message.guild and str(guild_id) != str(allowed_id):
             return
+            
         if message.channel.id in self.bot.settings.discord.ignored_channel_ids:
             return
 
@@ -100,7 +105,10 @@ class ChatCog(commands.Cog):
         try:
             # ═══ CONTEXT ═══
             context = await self._context_mgr.build(message)
-            display_name = message.member.display_name if message.member else message.author.display_name
+            
+            member = getattr(message, "member", None)
+            display_name = member.display_name if member else message.author.display_name
+            
             language = detect_language(content) or context.language
             nick = _extract_short_name(display_name)
 
@@ -114,7 +122,7 @@ class ChatCog(commands.Cog):
             mention_map = self._context_mgr.build_mention_map(context)
 
             user_messages_for_style = None
-            persona = await self._get_persona(str(message.author.id), str(message.guild.id))
+            persona = await self._get_persona(str(message.author.id), str(guild_id))
             if persona["preset"] == "matchuser":
                 user_messages_for_style = [
                     m.content for m in context.channel_history
@@ -126,7 +134,7 @@ class ChatCog(commands.Cog):
                 pool=self.bot.pools.db,
                 redis=self.bot.pools.redis,
                 user_id=str(message.author.id),
-                server_id=str(message.guild.id),
+                server_id=str(guild_id),
                 user_messages=user_messages_for_style,
                 language=language,
                 mention_map=mention_map,
@@ -171,13 +179,12 @@ class ChatCog(commands.Cog):
             await asyncio.sleep(delay)
             await message.reply(reply_text, mention_author=False)
 
-            # ═══ POST-PROCESSING (fire-and-forget) ═══
             asyncio.create_task(self._post_process(message, content, reply_text))
 
         except Exception as error:
             logger.error("chat_pipeline_failed", error=str(error))
             try:
-                await message.reply("something broke", mention_author=False)
+                await message.reply("my brain glitched sry", mention_author=False)
             except Exception:
                 pass
 
@@ -249,9 +256,9 @@ class ChatCog(commands.Cog):
         )
 
 
-# ═══════════════════════════════════════════════
+# ═══════════════════════════════════════════
 # MODULE-LEVEL HELPERS
-# ═══════════════════════════════════════════════
+# ═══════════════════════════════════════════
 
 import random
 
@@ -300,9 +307,9 @@ def _extract_short_name(display_name: str) -> str:
     return clean[:7] if len(clean) > 7 else clean
 
 
-# ═══════════════════════════════════════════════
+# ═══════════════════════════════════════════
 # SETUP
-# ═══════════════════════════════════════════════
+# ═══════════════════════════════════════════
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(ChatCog(bot))
