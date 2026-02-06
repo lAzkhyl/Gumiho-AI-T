@@ -111,8 +111,6 @@ CHITCHAT_RESPONSES = {
     ],
 }
 
-# CLEANED: Strictly English Keywords to prevent "Bipolar Language" issues.
-# If user speaks Indo, it will fail these checks and fall to LLM (Desired Behavior).
 GREETING_KEYWORDS = {"hi", "hello", "hey", "yo", "sup"}
 MORNING_KEYWORDS = {"morning", "gm"}
 NIGHT_KEYWORDS = {"night", "gn"}
@@ -155,7 +153,6 @@ class LocalRouter:
         return self._encoder
 
     def classify(self, content: str, has_image: bool = False) -> RouteResult:
-        # CRITICAL: Vision bypass — image presence overrides text classification
         if has_image:
             return RouteResult(
                 route=RouteType.VISION,
@@ -211,7 +208,10 @@ class LocalRouter:
         try:
             embeddings = self._encoder(docs=[text])
             if embeddings and len(embeddings) > 0:
-                return embeddings[0].tolist()
+                embedding = embeddings[0]
+                if hasattr(embedding, "tolist"):
+                    return embedding.tolist()
+                return embedding
         except Exception as error:
             logger.error("embedding_failed", error=str(error))
         return None
