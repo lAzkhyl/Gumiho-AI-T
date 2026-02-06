@@ -25,7 +25,10 @@ class DiscordConfig(BaseSettings):
 
 
 class GroqConfig(BaseSettings):
-    model_config = SettingsConfigDict(env_prefix="GROQ_")
+    model_config = SettingsConfigDict(
+        env_prefix="GROQ_",
+        protected_namespaces=('settings_',),
+    )
 
     api_key: str = Field(...)
     model_fast: str = Field(default="llama-3.1-8b-instant")
