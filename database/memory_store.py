@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from datetime import datetime, timedelta, timezone
 
 import asyncpg
 import structlog
@@ -161,10 +162,11 @@ async def save_conversation(
     sentiment: float = 0.0,
     is_bot: bool = False,
 ) -> None:
+
     cid = str(channel_id)
     mid = str(message_id)
     uid = str(user_id)
-    
+
     await execute(
         pool,
         """INSERT INTO conversation_log
@@ -172,7 +174,7 @@ async def save_conversation(
            VALUES ($1, $2, $3, $4, $5, $6, $7)
            ON CONFLICT (message_id) DO NOTHING""",
         cid, mid, uid, content[:2000],
-        str(embedding) if embedding else None,
+        embedding,
         sentiment, is_bot,
     )
 
@@ -186,6 +188,8 @@ async def semantic_search(
 ) -> list[dict]:
     cid = str(channel_id)
     
+    cutoff_time = datetime.now(timezone.utc) - timedelta(hours=window_hours)
+    
     rows = await fetch(
         pool,
         """
@@ -194,7 +198,7 @@ async def semantic_search(
             FROM conversation_log
             WHERE channel_id = $1
               AND embedding IS NOT NULL
-              AND created_at > now() - ($3 * INTERVAL '1 hour')
+              AND created_at > $3
         )
         SELECT
             user_id,
@@ -206,7 +210,7 @@ async def semantic_search(
         ORDER BY distance ASC
         LIMIT $4
         """,
-        cid, str(query_embedding), window_hours, limit,
+        cid, query_embedding, cutoff_time, limit,
     )
     
     return [
