@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import asyncio
+import json
+import random
 
 import discord
 import structlog
@@ -151,12 +153,22 @@ class ChatCog(commands.Cog):
                         system_prompt=system_prompt,
                         user_text=content or "react to this image naturally",
                         image_url=image_url,
-                        max_tokens=100,
+                        max_tokens=150,
                     )
+                    
                     if response.success:
-                        reply_text = response.content.strip()
+                        raw_text = response.content.strip()
+                        if raw_text.startswith("{") and "response_text" in raw_text:
+                            try:
+                                parsed = json.loads(raw_text)
+                                reply_text = parsed.get("response_text", raw_text)
+                            except Exception:
+                                reply_text = raw_text
+                        else:
+                            reply_text = raw_text
                     else:
                         reply_text = ""
+                    
                     should_respond = bool(reply_text)
                 else:
                     should_respond = False
@@ -179,6 +191,7 @@ class ChatCog(commands.Cog):
             await asyncio.sleep(delay)
             await message.reply(reply_text, mention_author=False)
 
+            # ═══ POST-PROCESSING (fire-and-forget) ═══
             asyncio.create_task(self._post_process(message, content, reply_text))
 
         except Exception as error:
