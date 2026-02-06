@@ -60,8 +60,7 @@ class DatabaseConfig(BaseSettings):
 
 class RedisConfig(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="REDIS_")
-    url: str = Field(...) 
-    
+    url: str = Field(..., validation_alias="REDIS_URL")
     max_connections: int = Field(default=20)
 
 
