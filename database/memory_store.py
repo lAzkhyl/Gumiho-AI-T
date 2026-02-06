@@ -162,7 +162,6 @@ async def save_conversation(
     sentiment: float = 0.0,
     is_bot: bool = False,
 ) -> None:
-
     cid = str(channel_id)
     mid = str(message_id)
     uid = str(user_id)
@@ -187,9 +186,10 @@ async def semantic_search(
     limit: int = 3,
 ) -> list[dict]:
     cid = str(channel_id)
-    
     cutoff_time = datetime.now(timezone.utc) - timedelta(hours=window_hours)
     
+    embedding_str = str(query_embedding)
+
     rows = await fetch(
         pool,
         """
@@ -210,7 +210,7 @@ async def semantic_search(
         ORDER BY distance ASC
         LIMIT $4
         """,
-        cid, query_embedding, cutoff_time, limit,
+        cid, embedding_str, cutoff_time, limit,
     )
     
     return [
