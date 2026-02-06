@@ -61,7 +61,7 @@ class DatabaseConfig(BaseSettings):
 class RedisConfig(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="REDIS_")
 
-    url: str = Field(default="redis://localhost:6379/0")
+    url: str = Field(default="REDIS_URL")
     max_connections: int = Field(default=20)
 
 
